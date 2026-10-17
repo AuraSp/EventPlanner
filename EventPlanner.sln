@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "milestone28", "milestone28\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "milestone29", "milestone29\milestone29.csproj", "{8CE6D534-37B3-441C-A0A5-3AD0BDF64D6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "milestone30", "milestone30\milestone30.csproj", "{234534DD-31CB-4A1F-9CED-FAC1E4A0C2B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,5 +181,9 @@ Global
 		{8CE6D534-37B3-441C-A0A5-3AD0BDF64D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CE6D534-37B3-441C-A0A5-3AD0BDF64D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CE6D534-37B3-441C-A0A5-3AD0BDF64D6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{234534DD-31CB-4A1F-9CED-FAC1E4A0C2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234534DD-31CB-4A1F-9CED-FAC1E4A0C2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234534DD-31CB-4A1F-9CED-FAC1E4A0C2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234534DD-31CB-4A1F-9CED-FAC1E4A0C2B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
