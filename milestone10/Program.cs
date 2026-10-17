@@ -1,0 +1,302 @@
+﻿using System.Text.Json;
+
+string dataFilePath = "events.json";
+List<Dictionary<string, string>> events = LoadEvents(dataFilePath);
+
+int nextEventId = 1; //start from 1
+bool running = true;
+
+foreach (Dictionary<string, string> eventData in events)
+{
+    if (int.TryParse(eventData["id"], out int id) && id >= nextEventId)
+    {
+        nextEventId = id + 1;
+    }
+}
+
+while (running)
+{
+    Console.WriteLine("=== EVENT PLANNER ===");
+    Console.WriteLine("1. List all events");
+    Console.WriteLine("2. Add new event");
+    Console.WriteLine("3. Find event");
+    Console.WriteLine("4. Delete event");
+    Console.WriteLine("5. Exit");
+
+    Console.Write("Choose an option: ");
+    string choice = Console.ReadLine();
+
+    
+    switch (choice)
+    {
+        case "1":
+
+            ListEvents(events);
+            break;
+        
+        case "2":
+
+            AddEvent(events, ref nextEventId);
+            break;
+        
+        case "3":
+
+            FindEvent(events);
+            break;
+        
+        case "4":
+            
+            DeleteEvent(events);
+            break;
+        
+        case "5":
+            Console.WriteLine("Exiting...");
+            running = false;
+            break;
+        
+        default:
+            Console.WriteLine("Invalid option.");
+            break;
+    }
+
+}
+
+void ListEvents(List<Dictionary<string, string>> events)
+{
+    if (events.Count == 0)
+    {
+        Console.WriteLine("No events found.");
+    }
+    else
+    {
+        foreach (Dictionary<string, string> eventData in events)
+        {
+            Console.WriteLine($"ID: {eventData["id"]}");
+            Console.WriteLine($"Type: {eventData["type"]}");
+            Console.WriteLine($"Name: {eventData["name"]}");
+            Console.WriteLine($"Date: {eventData["date"]}");
+            Console.WriteLine($"Time: {eventData["time"]}");
+            Console.WriteLine($"Location: {eventData["location"]}");
+            Console.WriteLine($"Guest count: {eventData["guestCount"]}");
+            Console.WriteLine($"Notes: {eventData["notes"]}");
+            Console.WriteLine();
+        }
+    }
+}
+
+// nextEventId++; we want that updated value to survive outside the method
+void AddEvent( List<Dictionary<string, string>> events, ref int nextEventId)
+{
+ Console.WriteLine("Creating a new event...");
+            
+            int eventId = nextEventId;
+            nextEventId++; //before entering all data, unique id already being assigned
+            
+            Console.WriteLine("\n--- NEW EVENT ---");
+            string eventType = "";
+
+            while (eventType == "") //keep asking until we successfully assign a real event type.
+            {
+                Console.WriteLine("Select event type:");
+                Console.WriteLine("1. Wedding (Champagne table)");
+                Console.WriteLine("2. Other event");
+
+                Console.Write("Type: ");
+                string eventTypeChoice = Console.ReadLine();
+
+                if (eventTypeChoice == "1")
+                {
+                    eventType = "Wedding";
+                }
+                else if (eventTypeChoice == "2")
+                {
+                    eventType = "Other event";
+                }
+                else
+                {
+                    Console.WriteLine("Invalid type. Please choose 1 or 2.");
+                }
+            }
+                        
+            //shared fields for both events
+            Console.Write("Event name: ");
+            string eventName = Console.ReadLine();
+
+            Console.Write("Date: ");
+            string eventDate = Console.ReadLine();
+
+            Console.Write("Time: ");
+            string eventTime = Console.ReadLine();
+
+            Console.Write("Location: ");
+            string eventLocation = Console.ReadLine();
+
+            
+            /* in here we can use ASCII/UNICODE system to let machine check if symbol can be a number.
+             Under the hood, numeric characters such as '0' to '9' have character values.
+               For example in ASCII:
+               '0' = 48
+               '1' = 49
+               ...
+               '9' = 57
+               
+                To parse into actual number TryParse uses math trick - [text - 48] = textParsedIntoNumber.
+               For a single digit, we manually convert it by subtracting '0' using ASCII:
+               '7' - '0' → 55 - 48 = 7.
+            
+            But user can enter value that can contain several digits, for example "125", so converting it
+            manually would require checking every character and building the final number.
+            If word would be 'one' -> letter 'o' has 111 code, so 48 != 111 != 57. So for each letter in entered value
+            we check using TryParse() and boolean validation.
+
+            */
+            int guestCount = 0; // default number for real people
+            bool validGuestCount = false;
+
+            while (!validGuestCount)
+            {
+                Console.Write("Guest count: ");
+                string guestInput = Console.ReadLine();
+
+                if (int.TryParse(guestInput, out guestCount) && guestCount > 0)
+                    // && guestCount > 0 added, because TryParse considers that -5, -100, 0 are valid integers
+                {
+                    validGuestCount = true;
+                    Console.WriteLine(guestCount);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please choose a number");
+                }
+            }
+            
+            
+            Console.Write("Important notes: ");
+            string notes = Console.ReadLine();
+                
+            Console.WriteLine("\n--- EVENT CREATED ---");
+            Console.WriteLine($"ID: {eventId}");
+            Console.WriteLine($"Type: {eventType}");
+            Console.WriteLine($"Name: {eventName}");
+            Console.WriteLine($"Date: {eventDate}");
+            Console.WriteLine($"Time: {eventTime}");
+            Console.WriteLine($"Location: {eventLocation}");
+            Console.WriteLine($"Guest count: {guestCount}");
+            Console.WriteLine($"Notes: {notes}");
+            
+            Dictionary<string, string> newEvent = new()
+            {
+                ["id"] = eventId.ToString(),
+                ["type"] = eventType,
+                ["name"] = eventName,
+                ["date"] = eventDate,
+                ["time"] = eventTime,
+                ["location"] = eventLocation,
+                ["guestCount"] = guestCount.ToString(),
+                ["notes"] = notes
+            };
+
+            events.Add(newEvent);
+            
+            SaveEvents(dataFilePath, events);
+}
+
+void FindEvent(List<Dictionary<string, string>> events)
+{
+    Console.Write("Enter event ID: ");
+    string searchId = Console.ReadLine();
+
+    bool eventFound = false;
+
+    foreach (Dictionary<string, string> eventData in events)
+    {
+        if (eventData["id"] == searchId)
+        {
+            Console.WriteLine("\n--- EVENT FOUND ---");
+            Console.WriteLine($"ID: {eventData["id"]}");
+            Console.WriteLine($"Type: {eventData["type"]}");
+            Console.WriteLine($"Name: {eventData["name"]}");
+            Console.WriteLine($"Date: {eventData["date"]}");
+            Console.WriteLine($"Time: {eventData["time"]}");
+            Console.WriteLine($"Location: {eventData["location"]}");
+            Console.WriteLine($"Guest count: {eventData["guestCount"]}");
+            Console.WriteLine($"Notes: {eventData["notes"]}");
+
+            eventFound = true;
+            break;
+        }
+    }
+
+    if (!eventFound)
+    {
+        Console.WriteLine("Event not found.");
+    }
+}
+
+void DeleteEvent(List<Dictionary<string, string>> events)
+{
+    Console.Write("Enter event ID to delete: ");
+    string deleteId = Console.ReadLine();
+
+    int deleteIndex = -1;
+
+    for (int i = 0; i < events.Count; i++)
+    {
+        if (events[i]["id"] == deleteId)
+        {
+            deleteIndex = i;
+            break;
+        }
+    }
+
+    if (deleteIndex != -1)
+    {
+        Console.WriteLine($"Deleting: {events[deleteIndex]["name"]}");
+        events.RemoveAt(deleteIndex);
+        
+        // Save again so events.json matches the updated events in RAM memory.
+        SaveEvents(dataFilePath, events);
+        
+        Console.WriteLine("Event deleted.");
+    }
+    else
+    {
+        Console.WriteLine("Event not found.");
+    }
+}
+
+void SaveEvents(
+    string filePath,
+    List<Dictionary<string, string>> events)
+{
+    string json = JsonSerializer.Serialize(events);
+
+    File.WriteAllText(filePath, json);
+}
+
+List<Dictionary<string, string>> LoadEvents(string filePath)
+{
+    if (!File.Exists(filePath))
+    {
+        return new List<Dictionary<string, string>>();
+    }
+
+    try
+    {
+        string json = File.ReadAllText(filePath);
+
+        List<Dictionary<string, string>> loadedEvents =
+            JsonSerializer.Deserialize<List<Dictionary<string, string>>>(json);
+
+        if (loadedEvents != null)
+        {
+            return loadedEvents;
+        }
+    }
+    catch (Exception)
+    {
+        Console.WriteLine("Could not load events from file.");
+    }
+
+    return new List<Dictionary<string, string>>();
+}
