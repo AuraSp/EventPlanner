@@ -1,11 +1,35 @@
-# EventPlanner
+## Development Progress
 
-Semester learning project preserved as step-by-step milestone snapshots.
+### Stage 01 — Basic Console
+Completed in milestone1–milestone15.
 
-- `milestone1` — basic console menu, main loop, switch choices and event type input.
-- `milestone2` — adds shared event fields and guest-count validation.
-- `milestone3` — adds confirmation output showing the newly entered event data.
+- Console menu and basic CRUD operations
+- Collections and methods
+- JSON persistence
+- LINQ
+- Input validation
+- Exception handling
 
-## Rule for the next step
+### Stage 02 — OOP and Persistence
+Completed in milestone16–milestone22.
 
-When the next meaningful update begins, copy the latest milestone folder to `milestone4` and make changes only in that new folder. Older milestone folders stay unchanged so the project evolution remains visible.
+- Event class and objects
+- Constructors and properties
+- Encapsulation
+- Domain validation
+- JSON serialization of Event objects
+- Error handling
+
+### Stage 03 — Layered Multi-User Application
+Completed in milestone23–milestone39.
+
+- User model and registration
+- Login and logout
+- PBKDF2 password hashing
+- User-specific event ownership
+- Repository interfaces
+- In-memory and JSON repositories
+- EventService and AuthService
+- Separate console presentation
+- Constructor-based dependency injection
+- Authorization checks for event operations
