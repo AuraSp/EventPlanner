@@ -56,7 +56,6 @@ try
 
     Console.WriteLine("SQLite database initialized successfully.");
     
-    
     menu.Run();
 }
 catch (Exception ex) when (

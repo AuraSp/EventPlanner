@@ -35,7 +35,6 @@ public class SqliteDatabase
 
     public void Initialize()
     {
-        
         using var connection = OpenConnection();
 
         connection.Execute("""
